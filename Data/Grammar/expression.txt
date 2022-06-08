@@ -1,0 +1,55 @@
+@增广
+E:# expression #
+@表达式
+expression:calculation_expression|relation_expression|bool_expression|wei_expression|yiwei_expression|one_op|call_func|fuzhi_expression
+@算数表达式
+calculation_expression:term + calculation_expression|term - calculation_expression|term
+@项
+term:factor * term|factor / term|factor % term|factor
+@因子
+factor:( expression )|const_value|change_value|call_func|one_op
+@变量
+change_value:identity
+
+@函数调用
+call_func:identity ( para_list )|identity ( )
+@参数表
+para_list:real_para|$
+@参数
+real_para:expression , real_para|expression
+
+@赋值表达式
+fuzhi_expression:change_value = expression|change_value /= expression|change_value *= expression|change_value += expression|change_value -= expression|change_value %= expression
+fuzhi_expression:change_value &= expression|change_value ^= expression|change_value \= expression|change_value <<= expression|change_value >>= expression
+
+@单目运算
+one_op:change_value ++|++ change_value|-- change_value|change_value --
+
+@关系表达式
+relation_expression:r_term == relation_expression|r_term != relation_expression|r_term
+@关系项
+r_term:r_factor > r_term|r_factor < r_term|r_factor >= r_term|r_factor <= r_term|r_factor
+@比关系运算高的表达式-关系因子
+r_factor:calculation_expression|yiwei_expression|call_func
+
+
+@布尔表达式||最低
+bool_expression:bool_term \\ bool_expression|bool_term
+@布尔项然后为&&
+bool_term:bool_factor && bool_term|bool_factor
+@布尔因子其他比布尔项高的表达式
+bool_factor:calculation_expression|relation_expression|wei_expression|! bool_expression|yiwei_expression|call_func
+
+@位运算表达式
+wei_expression:wei_term1 \ wei_expression|wei_term1
+@^ > |
+wei_term1:wei_term2 ^ wei_term1|wei_term2
+@& > ^
+wei_term2:wei_factor & wei_factor|wei_factor
+@其他的优先级更高的
+wei_factor:calculation_expression|relation_expression|~ wei_expression|yiwei_expression|call_func
+
+@移位运算
+yiwei_expression:yi_factor << yiwei_expression|yi_factor >> yiwei_expression|yi_factor
+@移位因子
+yi_factor:calculation_expression|call_func

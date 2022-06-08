@@ -1,0 +1,187 @@
+@程序
+program:pre_sentence pre_main int main ( ) complex_sentence function_block
+
+@预处理语句
+pre_sentence:pre_sentence_form|$
+@预处理语句表
+pre_sentence_form:include_form|define_form
+@include语句表
+include_form:#include < head_file > temp1|#include " head_file " temp1|$
+@修改1
+temp1:include_form|$
+@define语句表
+define_form:#define change_value const_value temp2|$
+@修改2
+temp2:define_form|$
+
+@main函数前
+pre_main:declare_form|define_fun_form
+@声明
+declare_form:declare_sentence temp3
+@定义
+define_fun_form:function_define temp3
+@修改3
+temp3:declare_form|define_fun_form|$
+
+@函数块
+function_block:function_define function_block|$
+@函数定义
+function_define:function_type identity ( parameter_define_list ) complex_sentence
+@函数定义形参列表
+parameter_define_list:parameter_function_define|$
+@函数定义形参
+parameter_function_define:change_type identity temp4
+@修改4
+temp4:, parameter_function_define|$
+
+@语句
+sentence:declare_sentence|run_sentence
+
+@声明语句
+declare_sentence:value_declare|function_declare|$
+@值声明
+value_declare:const_value_declare|change_value_declare
+
+@常量声明
+const_value_declare:const const_type const_declare_form
+@常量类型
+const_type:int|char|float|double|string
+@常量声明表
+const_declare_form:identity = const_value temp5
+@修改5
+temp5:;|, const_declare_form 
+
+@变量声明
+change_value_declare:change_type change_declare_form
+@变量声明表
+change_declare_form:one_change_value temp6
+@修改6
+temp6:;|, change_declare_form
+@单变量声明
+one_change_value:change_value temp7
+@修改7
+temp7:= expression|$
+@变量类型
+change_type:int|char|float|double|string
+
+@函数声明
+function_declare:function_type identity ( function_declare_list ) ;
+@函数类型
+function_type:int|char|float|double|string|void
+@函数声明形参表
+function_declare_list:parameter_function_declare|$
+@函数声明形参
+parameter_function_declare:change_type temp8
+@修改8
+temp8:, parameter_function_declare|$
+
+@执行语句
+run_sentence:data_deal_sentence|control_sentence|complex_sentence
+
+@数据处理语句
+data_deal_sentence:fuzhi_sentence|call_function_sentence|expression
+@赋值语句
+fuzhi_sentence:fuzhi_expression ;
+@函数调用语句
+call_function_sentence:call_function ;
+
+@控制语句
+control_sentence:if_sentence|for_sentence|while_sentence|do_while_sentence|return_sentence
+
+@复合语句
+complex_sentence:{ sentence_table }
+@语句表
+sentence_table:sentence temp9
+@修改9
+temp9:sentence_table|$
+
+@if语句
+if_sentence:if ( expression ) sentence temp10
+@修改10
+temp10: else sentence|$
+@for语句
+for_sentence:for ( expression ; expression ; expression ) loop_sentence
+@while语句
+while_sentence:while ( expression ) loop_sentence
+@do_while语句
+do_while_sentence:do loop_complex while ( expression ) ;
+@循环语句
+loop_sentence:loop_run|loop_complex
+@循环复合语句
+loop_complex:{ loop_form }
+@循环语句表
+loop_form:loop_sentence temp11
+@修改11
+temp11:loop_form|$
+@循环执行语句
+loop_run:value_sentence|data_deal_sentence|control_sentence
+@return语句
+return_sentence:return temp12
+@修改12
+temp12:;|expression ;
+@break语句
+break_sentence:break ;
+@continue语句
+continue_sentence:continue ;
+
+@表达式
+expression:calculation_expression|relation_expression|bool_expression|fuzhi_expression|wei_expression|yiwei_expression
+@算数表达式
+calculation_expression:term + calculation_expression|term - calculation_expression|term
+@项
+term:factor * term|factor / term|factor % term|factor
+@因子
+factor:( expression )|const_value|change_value|call_function|- factor|one_op change_value|change_value one_op
+@变量
+change_value:identity
+@单目运算符
+one_op:++|--
+@常量
+const_value:number_const|string_const|char_const
+@函数调用
+call_function:identity ( real_parameter_list )
+@实参列表
+real_parameter_list:real_parameter|$
+@实参
+real_parameter:expression temp14
+@修改14
+temp14:, real_parameter|$
+
+@关系表达式
+relation_expression:r_term relation_op1 r_term
+@关系项
+r_term:r_factor relation_op2 r_factor
+@比关系运算高的表达式-关系因子
+r_factor:calculation_expression|yiwei_expression
+@关系运算符1
+relation_op1:==|!=
+@关系运算符2
+relation_op2:>|<|>=|<=
+
+@布尔表达式||最低
+bool_expression:bool_term \\ bool_expression|bool_term
+@布尔项然后为&&
+bool_term:bool_factor && bool_term|bool_factor
+@布尔因子其他比布尔项高的表达式
+bool_factor:calculation_expression|relation_expression|wei_expression|! bool_expression|yiwei_expression
+
+@赋值表达式
+fuzhi_expression:identity fuzhi_op expression
+@赋值符号
+fuzhi_op:+=|-=|*=|/=|%=|>>=|<<=|&=|^=|\=
+
+@位运算表达式
+wei_expression:wei_term1 \ wei_expression|wei_term1
+@^ > |
+wei_term1:wei_term2 ^ wei_term1|wei_term2
+@& > ^
+wei_term2:wei_factor & wei_factor|wei_factor
+@其他的优先级更高的
+wei_factor:calculation_expression|relation_expression|~ wei_expression|yiwei_expression
+
+@移位运算
+yiwei_expression:yi_factor yi_op yi_factor
+@移位因子
+yi_factor:calculation_expression
+@移位操作符
+yi_op:>>|<<

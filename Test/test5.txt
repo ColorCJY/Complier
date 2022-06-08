@@ -1,0 +1,15 @@
+//while嵌套if测试，求给定数以内所有偶数的和
+int main(){
+
+    int i = 0,sum=0,N;
+    N = read();
+
+    while(i < N){
+       if(i%2 == 0){
+           sum = sum +i;
+       }
+       i = i + 1;
+    }
+    write(sum);
+}
+

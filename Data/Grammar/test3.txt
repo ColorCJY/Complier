@@ -1,0 +1,9 @@
+P:b T d
+T:S F
+F:; S F|$
+S:N|C
+N:a
+C:I D
+D:e S|$
+I:Z N
+Z:i c t

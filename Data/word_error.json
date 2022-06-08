@@ -1,0 +1,11 @@
+{
+  "401": "you may use char-data, but more than one character or lack ': ",
+  "402": "must have a character in ''",
+  "403": "illegal character, not use: ",
+  "404": "unknown character, not use: ",
+  "405": "lack character \", please add it",
+  "407": "undeclared identifier, please declare",
+  "408": "#define error, please follow \"#define Identifier Value\"",
+  "409": "#include error, please follow \"#include<...> or #include\"...\"\"",
+  "800": "lack character \"*/\", please add it"
+}
